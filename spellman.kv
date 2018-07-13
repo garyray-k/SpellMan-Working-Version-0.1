@@ -1,0 +1,139 @@
+#:kivy 1.10.1
+#: import main main
+#: import ListAdapter kivy.adapters.listadapter.ListAdapter
+#: import ListItemButton kivy.uix.listview.ListItemButton
+#: import SimpleListAdapter kivy.adapters.simplelistadapter.SimpleListAdapter
+
+<MainScreen>:
+    on_enter: root.clear_list()
+    dd_level: dd_level.__self__
+    dd_class: dd_class.__self__
+    GridLayout:
+        id: menu_layout
+        cols: 4
+        on_parent: root.class_level_list_generator()
+        Label:
+            text: 'Pick a class by selecting the button below.'
+            text_size: self.width, None
+        Label:
+            text: 'Pick a caster level by selecting the button below.'
+            text_size: self.width, None
+        Label:
+            text: 'Click below to start managing.'
+            text_size: self.width, None
+        Label:
+            text: 'created for fun! by krauseling'
+            text_size: self.width, None
+        Button:
+            id: btn_class_dropdown
+            text: 'Select a class...'
+            size_hint_y: .66
+            on_release: dd_class.open(self)
+            DropDown:
+                id: dd_class
+        Button:
+            id: btn_level_dropdown
+            text: 'Select a level...'
+            size_hint_y: .66
+            on_release: dd_level.open(self)
+            DropDown:
+                id: dd_level
+        Button:
+            id: btn_manager
+            text: 'Manage My Spells!'
+            size_hint_y: .66
+            on_release: root.f_btn_manager()
+        Button:
+            id: btn_exit
+            text: 'Exit'
+            size_hint_y: .66
+            on_release: app.stop()
+
+<SpellScreen>:
+    on_enter: root.load_spells()
+    BoxLayout:
+        id: spell_layout
+        BoxLayout:
+            id: left_box
+            orientation: 'vertical'
+            spacing: 10
+            size_hint: (.3, 1)
+            ListView:
+                id: left_top_box
+                size_hint: (1, .8)
+                adapter:
+                    ListAdapter(data=root.speller, 
+                    cls=main.SpellListButton,
+                    allow_empty_selection=False
+                    )
+            BoxLayout:
+                id: left_bottom_box
+                size_hint: (1, .2)
+                Button:
+                    id: btn_rest
+                    text: 'Rest'
+                    on_release: root.f_btn_rest()
+                Button:
+                    id: btn_main
+                    text: 'Main \n Menu'
+                    on_release: root.f_btn_main()
+                Button:
+                    id: btn_quit
+                    text: 'Exit'
+                    on_release: app.stop()
+        ScrollView:
+            size_hint: (.7, 1)
+            viewport_size: self.size
+            GridLayout:
+                id: right_box
+                cols: 1
+                size_hint_y: None
+                spacing: (0, 1)
+                height: self.minimum_height
+                Label:
+                    text: 'Select a Spell from the left list...' 
+                    halign: 'left'
+                    text_size: self.width, None
+                    height: self.texture_size[1]
+                    size_hint_y: None
+
+<SpellDescriptionLabel>:
+    text_size: self.width, None
+    height: self.texture_size[1]
+    size_hint_y: None
+
+<SpellSelectScreen>:
+    on_enter: root.list_user_spells()
+    BoxLayout:
+        id: spell_select_box
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: (.25, 1)
+            ListView:
+                id: user_spell_list_view
+                adapter:
+                    ListAdapter(data=root.speller, 
+                    selection_mode='multiple', 
+                    cls=main.SpellListButton,
+                    )
+            Button:
+                id: btn_spell_select
+                text: 'Complete Rest'
+                size_hint: (1, .25)
+                on_release: root.complete_rest()
+        ScrollView:
+            viewport_size: self.size
+            size_hint: (.75, 1)
+            GridLayout:
+                id: all_spells_description
+                cols: 1
+                size_hint_y: None
+                spacing: (0, 1)
+                height: self.minimum_height
+                Label:
+                    id: spell_name
+                    size_hint_y: None
+                    text_size: self.width, None
+                    height: self.texture_size[1]
+                    text: 'Spell Name'
+            
